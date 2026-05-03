@@ -18,13 +18,19 @@ class Unit:
         if name.startswith("_"):
             super().__setattr__(name, value)
         else:
-            self._level[name] = value
+            self[name] = value
 
     def __getattr__(self, name):
-        if not name in self._level.keys():
-            self._level[name] = Unit()
-        
-        return self._level[name]
+        return self[name]
+
+    def __getitem__(self, key):
+        if not key in self._level.keys():
+            self._level[key] = Unit()
+
+        return self._level[key]
+
+    def __setitem__(self, key, value):
+        self._level[key] = value
 
 
 class Configuration:
@@ -42,8 +48,14 @@ class Configuration:
         else:
             setattr(self._config, name, value)
 
+    def __setitem__(self, key, value):
+        self._config[key] = value
+
     def __getattr__(self, name):
         return getattr(self._config, name)
+
+    def __getitem__(self, key):
+        return self._config[key]
 
     def unpack(self) -> dict[str, int | float | str | bool | dict]:
         return self._config.unpack()
